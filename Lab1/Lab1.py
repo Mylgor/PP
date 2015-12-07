@@ -1,19 +1,13 @@
 import threading
 import string
 
-numbOfSymbol = 5
-numbOfString = 2
+numbOfSymbol = 500
+numbOfString = 100
 
-def print_letter(letter):
+def PrintLetter(letter):
     for _ in range(numbOfSymbol):
         print(letter, end="")
     print()
-
-def PrintLetterEvent(letter, eventWait, eventSet):
-    eventWait.wait()
-    eventWait.clear()
-    print_letter(letter)
-    eventSet.set()
 
 def GetThread(_threads):
     for index in range(len(_threads)):
@@ -28,7 +22,7 @@ def none(countFlows):
             ind = GetThread(threads)
             while ind == -1:
                 ind = GetThread(threads)
-            t = threading.Thread(target=print_letter, args=[letter])
+            t = threading.Thread(target=PrintLetter, args=[letter])
             t.start()
             threads[ind] = t
 
@@ -40,7 +34,7 @@ def look(countFlows):
             ind = GetThread(threads)
             while ind == -1:
                 ind = GetThread(threads)
-            t = threading.Thread(target=print_letter, args=[letter])
+            t = threading.Thread(target=PrintLetter, args=[letter])
             t.start()
             threads[ind] = t
 
@@ -52,7 +46,7 @@ def semaphore(countFlows):
             ind = GetThread(threads)
             while ind == -1:
                 ind = GetThread(threads)
-            t = threading.Thread(target=print_letter, args=[letter])
+            t = threading.Thread(target=PrintLetter, args=[letter])
             t.start()
             threads[ind] = t
 
@@ -65,7 +59,10 @@ def event(countFlows):
             ind = GetThread(threads)
             while ind == -1:
                 ind = GetThread(threads)
-            t = threading.Thread(target=PrintLetterEvent, args=[letter, event[ind - 1], event[ind]])
+            event[ind - 1].wait()
+            event[ind - 1].clear()
+            t = threading.Thread(target=PrintLetter, args=[letter])
+            event[ind].set()
             t.start()
             threads[ind] = t
 
